@@ -161,3 +161,21 @@ class TestAgreement(TransactionCase):
             self.test_agreement, self.env[action["res_model"]].search(action["domain"])
         )
         self.assertEqual(1, self.test_agreement.partner_id.agreements_count)
+
+    def test_agreement_kanban_menu_template(self):
+        res = self.env["agreement"].get_view(
+            view_id=self.ref("agreement_legal.view_project_agreement_kanban"),
+            view_type="kanban",
+        )
+        doc = etree.XML(res["arch"])
+        kanban = doc.xpath("//kanban")[0]
+        self.assertEqual(kanban.get("highlight_color"), "color")
+        self.assertTrue(doc.xpath("//templates/t[@t-name='menu']"))
+        self.assertFalse(doc.xpath("//div[hasclass('o_dropdown_kanban')]"))
+        self.assertFalse(doc.xpath("//*[contains(@t-attf-class, 'kanban_getcolor')]"))
+
+    def test_agreement_kanban_color_field(self):
+        self.test_agreement.color = 4
+        self.assertEqual(self.test_agreement.color, 4)
+        self.test_agreement.write({"color": 8})
+        self.assertEqual(self.test_agreement.color, 8)

@@ -49,7 +49,6 @@
         ],
     },
     "application": True,
-    "uninstall_hook": "uninstall_hook",
     "development_status": "Beta",
     "maintainers": ["max3903", "ygol"],
 }
